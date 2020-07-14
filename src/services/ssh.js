@@ -37,7 +37,11 @@ export default {
     },
 
     async download(){
-        return ssh.getFile('dump.sql', 'dump.sql')
+        return await ssh.getFile('dump.sql', 'dump.sql')
+    },
+
+    async remove(){
+        return await ssh.execCommand('rm dump.sql')
     },
 
     parseTables(txt) {

@@ -1,7 +1,7 @@
 <template>
   <page>
     <template slot="buttons">
-        <el-button type="primary" @click="importDB" :disabled="selected.length <= 0">
+        <el-button type="primary" @click="importDB" :disabled="selected.length <= 0 && localDB !== null">
           <i class="mr-2 text-lg fa fa-cloud-download-alt"></i>
           Import
         </el-button>
@@ -40,14 +40,22 @@
       
       <div class="flex-1">
         Selecteer lokale database
+
+        <div v-for="(db,i) in localDbs" :key="i">
+          <el-radio v-model="localDB" :label="db">{{ db }}</el-radio>
+        </div>
+
       </div>
     </div>
+
+    <pre class="p-4 mt-4 text-sm border border-gray-200 rounded" v-text="log"></pre>
   </page>
 </template>
 
 <script>
 import ssh from '@/services/ssh'
 const { exec } = require('child_process')
+let mysql = require('mysql');
 
 export default {
   name: 'Home',
@@ -57,6 +65,10 @@ export default {
     currentConnection: null,
     connections: [],
     tables: [],
+    log: null,
+    localDbs: [],
+    localDB: null,
+    localConnection: null
   }),
 
   computed: {
@@ -67,6 +79,15 @@ export default {
 
   async created(){
       this.connections = await this.$db.select('select * from connections')
+
+      this.localConnection = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: ''
+      });
+
+      this.localConnection.connect()
+      this.listLocalDBs()
   },
 
   methods: {
@@ -78,17 +99,32 @@ export default {
       })
     },
 
+    listLocalDBs(){
+      const sql = 'show databases'
+      this.localConnection.query(sql, (error, results) => {
+        this.localDbs = results.map(x => x.Database)
+      })
+    },
+
     async importDB(){
-      console.log('connected, dumping..')
-      const command = `mysqldump -u ${this.connection.db_username} -p${this.connection.db_password} ${this.connection.db_database} ${this.selected[0]} > dump.sql`
+      this.addLog('connected, dumping..')
+      const command = `mysqldump -u ${this.connection.db_username} -p${this.connection.db_password} ${this.connection.db_database} ${this.selected.join(' ')} > dump.sql`
       await ssh.exec(this.connection, command)
-      console.log('dump done, downloading..')
+      this.addLog('dump done, downloading..')
 
       await ssh.download()
-      console.log('downloaded, executing..')
+      this.addLog('downloaded, executing..')
+      await ssh.remove()
 
-      exec('mysql -u root lease-auto < dump.sql')
+      exec(`mysql -u root ${this.localDB} < dump.sql`)
       this.$message.success('All done!')
+
+      exec('rm dump.sql')
+      this.addLog('Done!')
+    },
+
+    addLog(msg) {
+      this.log += msg + '\n\n'
     }
   }
 }
