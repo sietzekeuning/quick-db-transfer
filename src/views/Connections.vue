@@ -1,9 +1,9 @@
 <template>
-  <div class="about">
-    
-    <div class="flex justify-end mb-4">
-      <btn-new-connection @saved="init" ref="modal"></btn-new-connection>
-    </div>
+  <page>
+
+    <template slot="buttons">
+        <btn-new-connection @saved="init" ref="modal"></btn-new-connection>
+    </template>
 
     <div v-if="!connections || connections.length === 0">
       No connections yet..
@@ -21,8 +21,8 @@
 
       <tr v-for="(connection,i) in connections" :key="i" @click="edit(connection)">
         <td>{{ connection.id }}</td>
-        <td>{{ connection.host }}</td>
-        <td>{{ connection.username }}</td>
+        <td>{{ connection.ssh_host }}</td>
+        <td>{{ connection.ssh_username }}</td>
         <td class="text-right">
           <i class="mr-2 text-gray-500 fa fa-times hover:text-red-500"
             @click.stop="remove(connection)"
@@ -39,7 +39,7 @@
         </td>
       </tr>
     </table>
-  </div>
+  </page>
 </template>
 
 <script>

@@ -10,6 +10,8 @@ import db from './plugins/db'
 Vue.use(ElementUI, {locale})
 Vue.use(db)
 
+Vue.component('page', require('./Page').default)
+
 Vue.config.productionTip = false
 
 new Vue({

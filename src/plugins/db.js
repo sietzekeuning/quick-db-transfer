@@ -8,10 +8,12 @@ export default {
     
     db.run(`CREATE TABLE if not exists connections (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        host varchar(191), 
-        username varchar(191), 
-        databasename varchar(191), 
-        key_path varchar(191)
+        ssh_host varchar(191), 
+        ssh_username varchar(191), 
+        key_path varchar(191),
+        db_database varchar(191), 
+        db_username varchar(191), 
+        db_password varchar(191)
     )`)
 
     Vue.prototype.$db.select = function(query){

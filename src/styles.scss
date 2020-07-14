@@ -6,6 +6,23 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 @import "~element-ui/packages/theme-chalk/src/index";
 
+body {
+    @apply bg-white;
+    font-family: 'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+  
+#nav {  
+    a {
+        @apply font-bold text-gray-700;
+  
+        &.router-link-exact-active {
+            @apply text-blue-500;
+        }
+    }
+}
+
 .el-message{
     @apply border-0;
 
