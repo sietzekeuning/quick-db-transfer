@@ -5,3 +5,23 @@ $--color-primary: teal;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 @import "~element-ui/packages/theme-chalk/src/index";
+
+.el-message{
+    @apply border-0;
+
+    .el-message__icon, .el-message__content{
+        color: white !important;
+    }
+
+    &.el-message--success{
+        @apply bg-green-500;
+    }
+
+    &.el-message--error{
+        @apply bg-red-500;
+    }
+
+    &.el-message--info{
+        @apply bg-blue-500;
+    }
+}

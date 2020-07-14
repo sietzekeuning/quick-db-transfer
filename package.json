@@ -16,8 +16,9 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "node-ssh": "^10.0.2",
+    "sqlite3": "^5.0.0",
     "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.3.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
