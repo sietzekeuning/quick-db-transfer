@@ -1,5 +1,5 @@
 /* theme color */
-$--color-primary: teal;
+$--color-primary: #318CEA;
 
 /* icon font path, required */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
@@ -24,4 +24,19 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     &.el-message--info{
         @apply bg-blue-500;
     }
+}
+
+.table{
+    @apply w-full;
+
+    th{
+        @apply p-1 bg-gray-200;
+    }
+
+    td{
+        @apply p-1;
+    }
+}
+.table tr:hover td{
+    @apply bg-gray-100 cursor-pointer;
 }

@@ -77,6 +77,11 @@ export default {
     async test(){
       const result = await ssh.test(this.item)
       this.testFeedback = result === true ? 'Verbinding succesvol!' : result
+    },
+
+    edit(item) {
+      this.item = item
+      this.show = true
     }
   }
 }

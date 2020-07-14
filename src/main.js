@@ -2,11 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import './assets/tailwind.css'
 import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
 import './styles.scss'
 import router from './router'
 import db from './plugins/db'
 
-Vue.use(ElementUI)
+Vue.use(ElementUI, {locale})
 Vue.use(db)
 
 Vue.config.productionTip = false

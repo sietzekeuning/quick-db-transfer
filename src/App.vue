@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <div id="nav" class="mb-4">
       <router-link to="/">Home</router-link> |
       <router-link to="/connections">Connections</router-link>
     </div>
@@ -25,7 +25,7 @@ body{
     @apply font-bold text-gray-700;
 
     &.router-link-exact-active {
-      @apply text-blue-600;
+      @apply text-blue-500;
     }
   }
 }
