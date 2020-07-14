@@ -62,11 +62,20 @@ export default {
         await this.$refs.form.validate()
       } catch (e){
         this.$message.error('Er is iets mis gegaan')
+        return
       }
+
+      const query = this.$db.prepare('insert into connections (host, username, databasename, key_path) values (?, ?, ?, ?)')
+      await query.run(this.item.host, this.item.username, this.item.databasename, this.item.key_path)
+      await query.finalize()
+
+      this.$message.success('Opgeslagen')
+      this.show = false
+      this.$emit('saved')
     },
 
     async test(){
-      const result = ssh.test(this.item)
+      const result = await ssh.test(this.item)
       this.testFeedback = result === true ? 'Verbinding succesvol!' : result
     }
   }

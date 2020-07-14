@@ -1,12 +1,15 @@
 <template>
   <div class="about">
     
-    <div class="flex justify-between">
-      <h1 class="mb-8">Here you will see the different connections</h1>
-      <btn-new-connection></btn-new-connection>
+    <div class="flex justify-end">
+      <btn-new-connection @saved="init"></btn-new-connection>
     </div>
 
-    <table class="w-full">
+    <div v-if="!connections || connections.length === 0">
+      No connections yet..
+    </div>
+
+    <table class="w-full" v-else>
       <thead>
         <tr>
           <th class="text-left">#</th>
@@ -36,9 +39,8 @@
 </template>
 
 <script>
-const sqlite3 = require('sqlite3')
-const NodeSSH = require('node-ssh')
 import BtnNewConnection from '@/components/btn-new-connection'
+import ssh from '@/services/ssh'
 
 export default {
   components: {
@@ -50,57 +52,27 @@ export default {
     connections: []
   }),
 
-  async created(){
-    this.connect()
-    await this.migrate()
-    await this.query()
+  created(){
+    this.init()
   },
 
   methods: {
-    connect(){
-      if(this.db && this.db.open)return
-      this.db = new sqlite3.Database('base.db')
-    },
 
-    async migrate(){
-        await this.db.run(`CREATE TABLE if not exists connections (
-          id INTEGER PRIMARY KEY AUTOINCREMENT, 
-          host varchar(191), 
-          username varchar(191), 
-          databasename varchar(191), 
-          key_path varchar(191)
-        )`)
-    },
-
-    async query(){
-      this.db.all('select * from connections', (err, rows) => {
-        this.connections = rows
-      })      
+    async init(){
+      this.connections = await this.$db.select('select * from connections')
     },
 
     async testConnection(connection, i){
-      let ssh = new NodeSSH()
-
-      try{
-        
-        await ssh.connect({
-          host       : connection.host,
-          username   : connection.username,
-          privateKey : connection.key_path
-        })
-
-      } catch(e) {
+      const result = await ssh.test(connection)
+      if(result !== true){
         this.$set(this.connections[i], 'status', 'error')
         this.$message.error('Verbinding niet gelukt')
-        return
+        return        
       }
 
       this.$set(this.connections[i], 'status', 'success')
       this.$message.success('Verbinding succesvol')
-
-    }
-
-    
+    }    
   }
 }
 </script>
